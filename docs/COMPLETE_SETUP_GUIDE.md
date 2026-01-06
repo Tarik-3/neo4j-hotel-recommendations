@@ -113,6 +113,17 @@ python -m uvicorn app.main:app --port 8000
 # Then open: frontend\index.html in browser
 ```
 
+### Server Entry Points
+
+- **Production/LIVE:** [app/main.py](../app/main.py) — Always uses Neo4j. If the database is not reachable, the server will not start. Fix credentials in `.env` and see [NEO4J_SETUP_GUIDE.md](NEO4J_SETUP_GUIDE.md).
+- **Flexible/Demo:** [app/main_flexible.py](../app/main_flexible.py) — Can fall back to mock data for demos when Neo4j isn’t available.
+
+Run flexible server (optional):
+
+```bash
+python -m uvicorn app.main_flexible:app --port 8001
+```
+
 ## 📱 Using the Application
 
 ### For Visitors (Frontend)

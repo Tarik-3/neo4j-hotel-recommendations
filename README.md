@@ -92,6 +92,17 @@ scripts/start_server.ps1
 python -m uvicorn app.main:app --port 8000
 ```
 
+### Server Modes
+
+- **Live-only (default):** [app/main.py](app/main.py) always uses Neo4j data. If Neo4j is unreachable, the server exits with guidance to fix the connection.
+- **Flexible (optional):** [app/main_flexible.py](app/main_flexible.py) supports falling back to mock data. Use this only for local demos when Neo4j isn’t available.
+
+Start flexible mode manually:
+
+```bash
+python -m uvicorn app.main_flexible:app --port 8001
+```
+
 ### 5. Access the Application
 
 - **Frontend:** http://127.0.0.1:8000/
