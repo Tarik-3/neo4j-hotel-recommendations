@@ -20,10 +20,7 @@ if ($testResult -match "Connection successful") {
 }
 else {
     Write-Host "✗ Could not connect to Neo4j database" -ForegroundColor Red
-    Write-Host "`nStarting API server in MOCK mode (with sample data)..." -ForegroundColor Yellow
-    Write-Host "To fix Neo4j connection, see: NEO4J_SETUP_GUIDE.md" -ForegroundColor Yellow
-    Write-Host "Press Ctrl+C to stop the server`n" -ForegroundColor Yellow
-    
-    $env:USE_MOCK = "true"
-    & $pythonExe -m uvicorn app.main:app --port 8000 --reload
+    Write-Host "API will NOT start in mock mode. Please fix the Neo4j connection." -ForegroundColor Red
+    Write-Host "See docs/NEO4J_SETUP_GUIDE.md and verify .env credentials." -ForegroundColor Yellow
+    Exit 1
 }

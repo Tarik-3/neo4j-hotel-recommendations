@@ -5,7 +5,7 @@ Tests all endpoints with various scenarios
 import requests
 import json
 
-BASE_URL = "http://127.0.0.1:8001"
+BASE_URL = "http://127.0.0.1:8000"
 
 def print_response(title, response):
     """Pretty print API response"""
@@ -124,8 +124,8 @@ if __name__ == "__main__":
         exit(0 if success else 1)
     except requests.exceptions.ConnectionError:
         print("\n✗ ERROR: Could not connect to API server")
-        print("Make sure the server is running on http://127.0.0.1:8001")
-        print("Start with: uvicorn app.main_flexible:app --port 8001")
+        print("Make sure the server is running on http://127.0.0.1:8000")
+        print("Start with: uvicorn app.main:app --port 8000")
         exit(1)
     except Exception as e:
         print(f"\n✗ Unexpected error: {e}")

@@ -2,23 +2,14 @@ from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.schemas import HotelResponse
 from typing import List, Optional
-import os
 
-# Try to import the real service, fall back to mock if Neo4j is not available
-USE_MOCK = os.getenv("USE_MOCK", "false").lower() == "true"
-
-if USE_MOCK:
-    from app.services_mock import get_best_hotels_mock as get_best_hotels
-    print("⚠️  Running in MOCK mode - using sample data instead of Neo4j")
-else:
-    try:
-        from app.services import get_best_hotels
-        print("✓ Connected to Neo4j database")
-    except Exception as e:
-        print(f"⚠️  Could not connect to Neo4j: {e}")
-        print("⚠️  Falling back to MOCK mode - using sample data")
-        from app.services_mock import get_best_hotels_mock as get_best_hotels
-        USE_MOCK = True
+# Always use live Neo4j-backed services
+try:
+    from app.services import get_best_hotels
+    print("✓ Using Neo4j live data")
+except Exception as e:
+    # Fail hard rather than switching to mock mode
+    raise RuntimeError(f"Failed to initialize Neo4j services: {e}")
 
 app = FastAPI(
     title="Hotel Recommendation API - CAN Edition",
@@ -40,12 +31,12 @@ def root():
     """Root endpoint with API information"""
     return {
         "message": "Hotel Recommendation API for Africa Cup of Nations (CAN)",
-        "mode": "MOCK" if USE_MOCK else "LIVE",
+        "mode": "LIVE",
         "docs": "/docs",
         "endpoints": {
             "best_hotels": "/best-hotels?country=Egypt&max_price=150&limit=5"
         },
-        "available_countries": ["Egypt", "Morocco", "Algeria", "Senegal", "Cameroon", "Nigeria", "Tunisia", "Ivory Coast"] if not USE_MOCK else ["Egypt", "Morocco", "Algeria", "Senegal"]
+        "available_countries": ["Egypt", "Morocco", "Algeria", "Senegal", "Cameroon", "Nigeria", "Tunisia", "Ivory Coast"]
     }
 
 @app.get("/best-hotels", response_model=List[HotelResponse], tags=["Hotels"])
@@ -87,8 +78,8 @@ def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "mode": "MOCK" if USE_MOCK else "LIVE",
-        "database": "Mock data" if USE_MOCK else "Neo4j connected"
+        "mode": "LIVE",
+        "database": "Neo4j connected"
     }
 
 if __name__ == "__main__":

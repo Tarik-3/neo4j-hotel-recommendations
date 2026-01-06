@@ -20,15 +20,8 @@ if %ERRORLEVEL% EQU 0 (
     echo.
     %PYTHON_EXE% -m uvicorn app.main:app --port 8000 --reload
 ) else (
-    echo [WARNING] Could not connect to Neo4j database
-    echo.
-    echo Starting API server in MOCK mode with sample data...
-    echo To fix Neo4j connection, see: NEO4J_SETUP_GUIDE.md
-    echo Press Ctrl+C to stop the server
-    echo.
-    echo API will be available at: http://127.0.0.1:8000
-    echo Documentation at: http://127.0.0.1:8000/docs
-    echo.
-    set USE_MOCK=true
-    %PYTHON_EXE% -m uvicorn app.main:app --port 8000 --reload
+    echo [ERROR] Could not connect to Neo4j database
+    echo API will NOT start in mock mode. Please fix the connection.
+    echo See docs\NEO4J_SETUP_GUIDE.md and verify .env credentials.
+    exit /b 1
 )
